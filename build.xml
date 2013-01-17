@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<project name="Group 150 Towerdefense"
+	default="run" basedir="."
+	xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<property name="source.root" value="src" />
+	<property name="class.root" value="classes" />
+	<property name="resources.dir" value="group150/resources" />
+
+	<path id="project.class.path">
+		<pathelement location="${class.root}" />
+	</path>
+	
+	<target name="prepare" description="Sets up build structures">
+		<mkdir dir="${class.root}" />
+		<copy todir="${class.root}/${resources.dir}">
+			<fileset dir="${source.root}/${resources.dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="compile" depends="prepare" description="Kompiliert alle Klassen.">
+		<javac srcdir="${source.root}" destdir="${class.root}" debug="on" optimize="off" deprecation="on">
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+	
+	<target name="run" description="Startet das Spiel." depends="compile">
+		<java classname="group150.TowerDefense" fork="true">
+			<classpath refid="project.class.path" />
+		</java>
+	</target>
+	
+	<target name="package" description="Erzeugt eine ausfuehrbare JAR-Datei aus den Klassen" depends="compile">
+		<jar destfile="Towerdefense.jar" basedir="${class.root}">
+			<manifest>
+				<attribute name="Main-Class" value="group150.TowerDefense"/>
+            </manifest>
+		</jar>
+	</target>
+</project>
